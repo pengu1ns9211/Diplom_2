@@ -1,16 +1,19 @@
 import pytest
 import allure
 import requests
-from conftest import create_and_delete_user
+from conftest import create_and_delete_user, delete_user
 from data import APILinks, UserData
 from helpers import create_user_data
 
 
 class TestCreateUser:
     @allure.title('Успешная регистрация нового пользователя')
-    def test_create_new_user_success(self, create_and_delete_user):
+    def test_create_new_user_success(self, delete_user):
         payload = create_user_data()
         r = requests.post(APILinks.MAIN_URL + APILinks.REGISTER_URL, data=payload)
+
+        delete_user(payload)
+
         assert r.status_code == 200 and r.json().get("success") is True
 
     @allure.title('Ошибка при создании пользователя с данными уже зарегистрированного пользователя ')
